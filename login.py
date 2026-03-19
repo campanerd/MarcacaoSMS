@@ -35,4 +35,12 @@ password.send_keys (os.getenv("KOLMEYA_PASSWORD"))
 password.send_keys(Keys.ENTER)
 
 time.sleep(5)
+
+novo_envio = wait.until(
+    EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-bs-toggle='dropdown'].btn-success"))
+)
+novo_envio.click()
+
+time.sleep(10)
+
 # driver.quit()
