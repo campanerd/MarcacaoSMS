@@ -1,46 +1,35 @@
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.keys import Keys
-import time
 import os
 from dotenv import load_dotenv
+from playwright.sync_api import sync_playwright
 
+# Carrega as variáveis de ambiente
 load_dotenv()
 
-# 1 - utilizando o webDriver
-options = Options()
-#options.add_argument("--headless")  # opcional: roda sem abrir o navegador
+def run():
+    with sync_playwright() as p:
+        # 1 - Iniciando o navegador (headless=False para você ver o que está acontecendo)
+        browser = p.chromium.launch(headless=False)
+        context = browser.new_context()
+        page = context.new_page()
 
-driver = webdriver.Chrome(options=options)
+        # 2 - Acessando a página
+        page.goto("https://kolmeya.com.br/auth/login")
 
-driver.get("https://kolmeya.com.br/auth/login")
+        # 3 - Preenchendo os campos (O Playwright já espera o elemento aparecer automaticamente)
+        page.fill('input[name="email"]', os.getenv("KOLMEYA_USER"))
+        page.fill('input[name="password"]', os.getenv("KOLMEYA_PASSWORD"))
 
-#utilizei o WebDriverWait para ter um delay, pois codigo estava bugando
-wait = WebDriverWait(driver, 5)
+        # 4 - Pressionando Enter para logar
+        page.keyboard.press("Enter")
 
-#2 - acessando elementos numa pagina
-user = wait.until(
-    EC.presence_of_element_located((By.NAME, "email"))
-)
-user.send_keys (os.getenv("KOLMEYA_USER"))
+        page.wait_for_url("**/sms**", timeout=15000)
 
-password = wait.until(
-    EC.presence_of_element_located((By.NAME, "password"))
-)
-password.send_keys (os.getenv("KOLMEYA_PASSWORD"))
+        # 5 - Clicando no botão de Dropdown
+        page.click("a[data-bs-toggle='dropdown'].btn-success")
 
-password.send_keys(Keys.ENTER)
+        page.wait_for_timeout(10000) 
+        
+        # browser.close()
 
-time.sleep(5)
-
-novo_envio = wait.until(
-    EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-bs-toggle='dropdown'].btn-success"))
-)
-novo_envio.click()
-
-time.sleep(10)
-
-# driver.quit()
+if __name__ == "__main__":
+    run()
