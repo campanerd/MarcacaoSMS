@@ -17,7 +17,7 @@ def run():
 
         # 3 - Preenchendo os campos (O Playwright já espera o elemento aparecer automaticamente)
         page.fill('input[name="email"]', os.getenv("KOLMEYA_USER"))
-        page.wait_for_timeout(3) 
+        page.wait_for_timeout(100) 
         page.fill('input[name="password"]', os.getenv("KOLMEYA_PASSWORD"))
 
         # 4 - Pressionando Enter para logar
@@ -27,13 +27,21 @@ def run():
 
         # 5 - Clicando no botão de Dropdown
         page.click("a[data-bs-toggle='dropdown'].btn-success")
-        
         page.locator(".dropdown-menu.show").get_by_text("SMS Score (short code)", exact=False).first.click()
 
         page.click('[name="form.files.0.segment_id"]')
+        page.select_option('[name="form.files.0.segment_id"]', label="PREVENTIVO E QUEBRA")
 
-        page.wait_for_timeout(100) 
-        
+        page.click('[name="score"]')
+        page.select_option('[name="score"]', label="Média e alta probabilidade de entrega de SMS")
+
+        page.click('[name="form.layout_id"]')
+        page.select_option('[name="form.layout_id"]', label="Contrato, Telefone e Fraseologia")
+
+        page.locator('button[wire\:target="finish"]').click()
+
+        page.wait_for_timeout(10000) 
+
         # browser.close()
 
 if __name__ == "__main__":
