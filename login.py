@@ -7,28 +7,29 @@ load_dotenv()
 
 def run():
     with sync_playwright() as p:
-        # 1 - Iniciando o navegador (headless=False para você ver o que está acontecendo)
+        # Iniciando o navegador (headless=False para você ver o que está acontecendo)
         browser = p.chromium.launch(headless=False)
         context = browser.new_context()
         page = context.new_page()
 
-        # 2 - Acessando a página
+        # Acessando a página
         page.goto("https://kolmeya.com.br/auth/login")
 
-        # 3 - Preenchendo os campos (O Playwright já espera o elemento aparecer automaticamente)
+        # login
         page.fill('input[name="email"]', os.getenv("KOLMEYA_USER"))
         page.wait_for_timeout(100) 
         page.fill('input[name="password"]', os.getenv("KOLMEYA_PASSWORD"))
-
-        # 4 - Pressionando Enter para logar
         page.keyboard.press("Enter")
+
+        print("Login realizado!")
 
         page.wait_for_url("**/sms**", timeout=15000)
 
-        # 5 - Clicando no botão de Dropdown
+        # Clicando no botão de Dropdown
         page.click("a[data-bs-toggle='dropdown'].btn-success")
         page.locator(".dropdown-menu.show").get_by_text("SMS Score (short code)", exact=False).first.click()
 
+        #Selecoes
         page.click('[name="form.files.0.segment_id"]')
         page.select_option('[name="form.files.0.segment_id"]', label="PREVENTIVO E QUEBRA")
 
@@ -38,9 +39,21 @@ def run():
         page.click('[name="form.layout_id"]')
         page.select_option('[name="form.layout_id"]', label="Contrato, Telefone e Fraseologia")
 
-        page.locator('button[wire\:target="finish"]').click()
+        #Upload do arquivo
+        file_input_selector = 'input[id="files.0.file"]'
+        page.wait_for_selector(file_input_selector)
 
-        page.wait_for_timeout(10000) 
+        #fazendo upload
+        caminho = os.getenv("caminho_do_arquivo")
+        page.set_input_files(file_input_selector, caminho)
+        print("Arquivo enviado!")
+
+        btn_finish = page.locator(r'button[wire\:target="finish"]')
+        btn_finish.scroll_into_view_if_needed()
+        btn_finish.click()
+
+        page.wait_for_timeout(5000)
+        print("Processo concluído com sucesso!")
 
         # browser.close()
 
