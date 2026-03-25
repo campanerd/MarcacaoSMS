@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def atualizar_quebras():
-    data_ini = input("Digite a data inicial (YYYY-MM-DD HH:MM:SS.mmm): ")
-    data_fim = input("Digite a data final (YYYY-MM-DD HH:MM:SS.mmm): ")
+    data_ini = "2026-03-21 00:00:00.000"
+    data_fim = "2026-03-24 00:00:00.000" 
 
     conn_str = (
     f"Driver={{{os.getenv('DB_DRIVER')}}};"

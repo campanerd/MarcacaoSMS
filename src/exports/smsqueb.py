@@ -13,7 +13,7 @@ def exportar_sms_quebra(caminho_excel):
     df = pd.read_excel(caminho_excel, sheet_name="QUEBRAS")
 
     # mensagem base (igual VBA)
-    mensagem_base = input("Digite a mensagem base: ")
+    mensagem_base = ("Nao identificamos o pagamento da sua parcela, evite apreensao do seu veiculo. Ligue: ")
 
     #telefone por credor
     df["TEL_CREDOR"] = df.iloc[:, 1].apply(buscar_telefone_por_credor)
@@ -47,6 +47,9 @@ def exportar_sms_quebra(caminho_excel):
     df_final.to_csv(caminho_final, sep=";", index=False, encoding="utf-8-sig")
 
     print(f"Arquivo CSV exportado: {caminho_final}")
+
+    print("\nCredores sem telefone:")
+    print(df[df["TEL_CREDOR"] == ""][df.columns[1]].unique())
 
 if __name__ == "__main__":
     caminho_excel = Path.home() / "Documents" / "MarcacaoSMS" / "target" / "Quebras.xlsx"
