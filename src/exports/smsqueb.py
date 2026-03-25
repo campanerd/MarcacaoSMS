@@ -1,5 +1,9 @@
 import pandas as pd
 from datetime import datetime
+from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
 import os
 
 def exportar_sms_quebra(caminho_excel):
@@ -30,5 +34,5 @@ def exportar_sms_quebra(caminho_excel):
 
 
 if __name__ == "__main__":
-    caminho_excel = r"C:\Users\davi.fernandes\Documents\MarcacaoSMS\target\Quebras.xlsx"
+    caminho_excel = Path.home() / "Documents" / "MarcacaoSMS" / "target" / "Quebras.xlsx"
     exportar_sms_quebra(caminho_excel)
