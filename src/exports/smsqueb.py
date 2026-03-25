@@ -52,7 +52,3 @@ def exportar_sms_quebra(caminho_excel):
 
     print("\nCredores sem telefone:")
     print(df[df["TEL_CREDOR"] == ""][df.columns[1]].unique())
-
-if __name__ == "__main__":
-    caminho_excel = Path.home() / "Documents" / "MarcacaoSMS" / "target" / "Quebras.xlsx"
-    exportar_sms_quebra(caminho_excel)
