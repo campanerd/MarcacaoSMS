@@ -11,11 +11,11 @@ def atualizar_quebras():
     data_fim = "2025-10-02 23:59:59.998" 
 
     conn_str = (
-        "Driver={SQL Server};"
-        "Server=192.168.1.219;"
-        "Database=Mailing;"
-        "Trusted_Connection=yes;"
-    )
+    f"Driver={{{os.getenv('DB_DRIVER')}}};"
+    f"Server={os.getenv('DB_SERVER')};"
+    f"Database={os.getenv('DB_DATABASE')};"
+    f"Trusted_Connection={os.getenv('DB_TRUSTED_CONNECTION')};"
+)
 
     sql = f"""
     SELECT DISTINCT 
