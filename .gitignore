@@ -4,3 +4,5 @@
 # Variáveis de ambiente
 .env
 target/
+pycache__/
+__pycache__/
