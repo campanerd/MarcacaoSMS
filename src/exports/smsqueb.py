@@ -43,8 +43,10 @@ def exportar_sms_quebra(caminho_excel):
 
     destino = os.getenv("pasta_destino_quebra")
     caminho_final = os.path.join(destino, nome_arquivo)
+    caminho_local= os.path.join(os.getenv("pasta_destino_local"), nome_arquivo)
 
     df_final.to_csv(caminho_final, sep=";", index=False, encoding="utf-8-sig")
+    df_final.to_csv(caminho_local, sep=";", index=False, encoding="utf-8-sig")
 
     print(f"Arquivo CSV exportado: {caminho_final}")
 
