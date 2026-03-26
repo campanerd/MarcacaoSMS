@@ -1,4 +1,5 @@
 import os
+from time import sleep
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 from pathlib import Path
@@ -41,23 +42,83 @@ def run():
         page.click('[name="form.layout_id"]')
         page.select_option('[name="form.layout_id"]', label="Contrato, Telefone e Fraseologia")
 
-        #Upload do arquivo
-        file_input_selector = 'input[id="files.0.file"]'
-        page.wait_for_selector(file_input_selector)
-
         #caminho para qualquer maquina
         base_dir = Path(__file__).resolve().parent.parent.parent
         caminho = base_dir / "target" / "QUEBRAS_LAYOUT.csv"
 
-        #fazendo upload
-        page.set_input_files(file_input_selector, caminho)
-        print("Arquivo enviado!")
+        file_input = page.locator(r'#files\.0\.file')
 
-        btn_finish = page.locator(r'button[wire\:target="finish"]')
-        btn_finish.scroll_into_view_if_needed()
+        print("Inputs encontrados antes:", file_input.count())
+
+        file_input.set_input_files(str(caminho))
+        print("Arquivo enviado")
+
+        print("Logo após upload:",
+            file_input.evaluate("el => el.files && el.files.length ? el.files[0].name : null"))
+
+        page.wait_for_timeout(3000)
+
+        novo_input = page.locator(r'#files\.0\.file')
+
+        print("Inputs encontrados depois:", novo_input.count())
+        print("3s depois:",
+            novo_input.evaluate("el => el.files && el.files.length ? el.files[0].name : null"))
+
+        page.screenshot(path="debug_upload.png", full_page=True)
+
+        file_input.set_input_files(str(caminho))
+        print("Arquivo enviado")
+
+        print("Logo após upload:",
+            file_input.evaluate("el => el.files && el.files.length ? el.files[0].name : null"))
+
+        page.wait_for_timeout(3000)
+
+        novo_input = page.locator(r'#files\.0\.file')
+
+        print("Inputs encontrados depois:", novo_input.count())
+        print("3s depois:",
+            novo_input.evaluate("el => el.files && el.files.length ? el.files[0].name : null"))
+
+
+        sleep(20)
+
+        page.wait_for_function("""
+        () => {
+            const input = document.querySelector('#files\\\\.0\\\\.file');
+            return input && input.files.length > 0;
+        }
+    """)
+
+        btn_finish = page.locator('button:has-text("criar")')
+
+
+        btn_finish.wait_for(state="visible")
+        btn_finish.wait_for(state="attached")
+
+        page.wait_for_timeout(2000)  # pequeno buffer (opcional)
+
         btn_finish.click()
+        print("Processo concluído com sucesso!")
 
-        page.wait_for_timeout(5000)
+        sleep(20)
+
+        page.wait_for_function("""
+        () => {
+            const input = document.querySelector('#files\\\\.0\\\\.file');
+            return input && input.files.length > 0;
+        }
+    """)
+
+        btn_finish = page.locator('button:has-text("criar")')
+
+
+        btn_finish.wait_for(state="visible")
+        btn_finish.wait_for(state="attached")
+
+        page.wait_for_timeout(2000)  # pequeno buffer (opcional)
+
+        btn_finish.click()
         print("Processo concluído com sucesso!")
 
         # browser.close()

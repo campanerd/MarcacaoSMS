@@ -24,8 +24,8 @@ def rodar_quebras():
     print("Enviando para Kolmeya...")
 
     
-    #enviar_kolmeya()
-    # print("Processo completo finalizado!")
+    enviar_kolmeya()
+    print("Processo completo finalizado!")
 
 
 def main():
