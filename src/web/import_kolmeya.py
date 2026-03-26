@@ -1,6 +1,8 @@
 import os
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
+from pathlib import Path
+
 
 # Carrega as variáveis de ambiente
 load_dotenv()
@@ -43,8 +45,11 @@ def run():
         file_input_selector = 'input[id="files.0.file"]'
         page.wait_for_selector(file_input_selector)
 
+        #caminho para qualquer maquina
+        base_dir = Path(__file__).resolve().parent.parent.parent
+        caminho = base_dir / "target" / "QUEBRAS_LAYOUT.csv"
+
         #fazendo upload
-        caminho = os.getenv("caminho_do_arquivo")
         page.set_input_files(file_input_selector, caminho)
         print("Arquivo enviado!")
 

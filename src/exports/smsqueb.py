@@ -39,16 +39,17 @@ def exportar_sms_quebra(caminho_excel):
     })
 
     data_str = datetime.now().strftime("%d-%m-%Y_%H-%M")
-    nome_arquivo = f"QUEBRAS_{data_str}.csv"
+    nome_arquivo_rede = f"QUEBRAS_{data_str}.csv"
+    nome_arquivo_local = "QUEBRAS_LAYOUT.csv"
 
     destino = os.getenv("pasta_destino_quebra")
-    caminho_final = os.path.join(destino, nome_arquivo)
-    caminho_local= os.path.join(os.getenv("pasta_destino_local"), nome_arquivo)
+    caminho_rede = os.path.join(destino, nome_arquivo_rede)
+    caminho_local= os.path.join(os.getenv("pasta_destino_local"), nome_arquivo_local)
 
-    df_final.to_csv(caminho_final, sep=";", index=False, encoding="utf-8-sig")
+    df_final.to_csv(caminho_rede, sep=";", index=False, encoding="utf-8-sig")
     df_final.to_csv(caminho_local, sep=";", index=False, encoding="utf-8-sig")
 
-    print(f"Arquivo CSV exportado: {caminho_final}")
+    print(f"Arquivo CSV exportado: {caminho_rede}")
 
     print("\nCredores sem telefone:")
     print(df[df["TEL_CREDOR"] == ""][df.columns[1]].unique())
